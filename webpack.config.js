@@ -5,6 +5,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const OptimizeCssAssetWebpackPlugin = require('optimize-css-assets-webpack-plugin')
 const TerserWebpackPlugin = require('terser-webpack-plugin')
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 
 const isDev = process.env.NODE_ENV === 'development'
 const isProd = !isDev
@@ -31,7 +32,7 @@ const cssLoaders = (extra) => {
     const loaders = [{
         loader: MiniCssExtractPlugin.loader,
         options: {
-            hrm: isDev,
+            hmr: isDev,
             reloadAll: true
         }
     },
@@ -43,20 +44,18 @@ const cssLoaders = (extra) => {
     return loaders
 }
 
-module.exports = {
-    context: path.resolve(__dirname, 'src'),
-    mode: 'development',
-    entry: './index.js',
-    output: {
-        filename: filename('js'),
-        path: path.resolve(__dirname, 'dist')
-    },
-    devServer: {
-        port: 3000,
-        hot: isDev
-    },
-    optimization: optimization(),
-    plugins: [
+const jsLoaders = () => {
+    const loaders = [{
+        loader: "babel-loader"
+    }]
+    if (isDev) {
+        loaders.push('eslint-loader')
+    }
+    return loaders
+}
+
+const plugins = () => {
+    const base = [
         new HTMLWebpackPlugin({
             template: "./index.html",
             minify: {
@@ -72,7 +71,29 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: filename('css')
         })
-    ],
+    ]
+    if (isProd) {
+        base.push(new BundleAnalyzerPlugin())
+    }
+
+    return base
+}
+
+module.exports = {
+    context: path.resolve(__dirname, 'src'),
+    mode: 'development',
+    entry: ['@babel/polyfill','./index.js'],
+    output: {
+        filename: filename('js'),
+        path: path.resolve(__dirname, 'dist')
+    },
+    devServer: {
+        port: 3000,
+        hot: isDev
+    },
+    optimization: optimization(),
+    devtool: isDev? 'source-map' : '',
+    plugins: plugins(),
     module: {
         rules: [
             {
@@ -86,6 +107,11 @@ module.exports = {
             {
                 test: /\.(png|jpg|svg"gif)$/,
                 use: ['file-loader']
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: jsLoaders()
             }
         ]
     }
