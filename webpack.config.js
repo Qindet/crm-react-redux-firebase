@@ -36,7 +36,10 @@ const cssLoaders = (extra) => {
             reloadAll: true
         }
     },
-        'css-loader'
+        {loader: 'css-loader',
+        options: {
+            modules: true
+        }}
        ]
     if (extra) {
         loaders.push(extra)
@@ -57,7 +60,7 @@ const jsLoaders = () => {
 const plugins = () => {
     const base = [
         new HTMLWebpackPlugin({
-            template: "./index.html",
+            template: "../public/index.html",
             minify: {
                 collapseWhitespace: isProd
             }
@@ -81,7 +84,7 @@ const plugins = () => {
 
 module.exports = {
     context: path.resolve(__dirname, 'src'),
-    mode: 'development',
+    mode: isDev ? 'development': 'production',
     entry: ['@babel/polyfill','./index.js'],
     output: {
         filename: filename('js'),

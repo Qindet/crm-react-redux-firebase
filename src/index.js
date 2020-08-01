@@ -1,10 +1,6 @@
-import './style/style.scss'
-import './style/styles.css'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from "./components/app";
 
-class Test {
 
-    static id = Date.now()
-}
-
-const file = 2
-console.log(Test.id)
+ReactDOM.render(<App/>, document.getElementById('root'))
