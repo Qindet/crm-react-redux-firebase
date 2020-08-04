@@ -1,10 +1,11 @@
 .Auth {
   display: flex;
   justify-content: center;
+  align-items: center;
   flex-grow: 1;
-  padding-top: 100px;
   width: 100%;
-  background: linear-gradient(270deg, #cef2f1 0%, #35bfef 100%);
+  background: linear-gradient(200deg, #ddca4d 0%, #35bfea 100%);
+  height: 950px;
   > div {
     width: 100%;
     max-width: 600px;
