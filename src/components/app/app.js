@@ -1,10 +1,18 @@
 import React from 'react'
-import classes from "./app.scss"
-import Auth from "../auth";
+import MainHeader from "../main-header";
+import classes from './app.scss'
+import Customers from "../customers/customers";
 
 const App = () => {
 
-    return <Auth />
+
+    return (
+        <div>
+            <MainHeader/>
+            <Customers />
+        </div>
+
+        )
 }
 
 export default App
